@@ -18,8 +18,8 @@
 }
 
 .regions {
-    fill: #4e4206;
-    stroke: #fbfbfb;
+    fill: #ffffff;
+    stroke: #000000;
     stroke-width: 1px;
 }
 
@@ -30,8 +30,13 @@
 }
 
 .gratBackground {
-    fill: #D5E3FF;
+    fill: #bcc8e0;
 }
 .map {
     border: medium solid #999;
+}
+.countries {
+    fill: #030303;
+    stroke: #fdfdfd;
+    stroke-width: 2px;
 }

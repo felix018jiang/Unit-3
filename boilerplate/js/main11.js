@@ -21,7 +21,7 @@ function setMap() {
         .center([8, 48.2])
         .rotate([-2, 0, 0])
         .parallels([43, 62])
-        .scale(900)
+        .scale(950)
         .translate([width / 2, height / 2]);
 
     var path = d3.geoPath()
@@ -77,7 +77,6 @@ function setMap() {
                 return "regions " + d.properties.admin;
             })
             .attr("d", path);
-        
         
     }
     

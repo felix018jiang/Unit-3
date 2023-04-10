@@ -36,6 +36,9 @@ function setMap() {
         .parallels([43, 62])
         .scale(2500)
         .translate([width / 2, height / 2]);
+        
+        var naCountries = topojson.feature(na, na.objects.State_Boundaries),
+        usRegions = topojson.feature(us, us.objects.State_Boundaries);
 
         var regions = map
             .selectAll(".regions")
@@ -48,9 +51,7 @@ function setMap() {
             .attr("d", path);
 
         //translate na TopoJSON
-        var naCountries = topojson.feature(na, na.objects.State_Boundaries),
-            usRegions = topojson.feature(us, us.objects.State_Boundaries);
-
+        
         var countries = map.append("path")
             .datum(usRegions)
             .attr("class", "countries")
