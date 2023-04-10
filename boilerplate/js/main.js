@@ -17,41 +17,32 @@ function setMap() {
             na = data[1],
             us = data[2];
 
-            console.log(na)
-            console.log(na)
+        console.log(na)
+        console.log(us)
         var width = 960,
             height = 460;
 
         var map = d3
-        .select("body")
-        .append("svg")
-        .attr("class", "map")
-        .attr("width", width)
-        .attr("height", height);
+            .select("body")
+            .append("svg")
+            .attr("class", "map")
+            .attr("width", width)
+            .attr("height", height);
 
         var projection = d3
-        .geoAlbers()
-        .center([0, 46.2])
-        .rotate([-2, 0, 0])
-        .parallels([43, 62])
-        .scale(2500)
-        .translate([width / 2, height / 2]);
-        
-        var naCountries = topojson.feature(na, na.objects.State_Boundaries),
-        usRegions = topojson.feature(us, us.objects.State_Boundaries);
+            .geoAlbers()
+            .center([0, 46.2])
+            .rotate([-2, 0, 0])
+            .parallels([43, 62])
+            .scale(2500)
+            .translate([width / 2, height / 2]);
 
-        var regions = map
-            .selectAll(".regions")
-            .data(usRegions)
-            .enter()
-            .append("path")
-            .attr("class", function (d) {
-                return "regions " + d.properties.adm1_code;
-            })
-            .attr("d", path);
+        var naCountries = topojson.feature(na, na.objects.State_Boundaries),
+            usRegions = topojson.feature(us, us.objects.State_Boundaries);
+
 
         //translate na TopoJSON
-        
+
         var countries = map.append("path")
             .datum(usRegions)
             .attr("class", "countries")
@@ -65,26 +56,14 @@ function setMap() {
             .enter()
             .append("path")
             .attr("class", function (d) {
-                return "regions " + d.properties.adm1_code;
+                return "regions " + d.properties.STATEFP;
             })
             .attr("d", path);
 
 
     }
 
-    
 
-    //create new svg container for the map
-    
-
-    //create Albers equal area conic projection centered on France
-    
-    // var path = d3.geoPath().projection(projection);
-
-    //use Promise.all to parallelize asynchronous data loading
-
-
-    
 
 
 

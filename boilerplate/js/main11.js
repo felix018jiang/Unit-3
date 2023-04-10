@@ -28,9 +28,10 @@ function setMap() {
         .projection(projection);
 
     //use Promise.all to parallelize asynchronous data loading
-    var promises = [];    
+    var promises = [];
     promises.push(d3.csv("data/europe_data.csv")); //load attributes from csv    
-    promises.push(d3.json("data/EuropeCountries.topojson")); //load background spatial data    
+    promises.push(d3.json("data/EuropeCountries.topojson")); //load background spatial data
+    promises.push(d3.json("data/FranceRegions.topojson"));
     Promise.all(promises).then(callback);
 
     function callback(data) {
@@ -54,30 +55,43 @@ function setMap() {
 
         var csvData = data[0],
             europe = data[1];
+        france = data[2];
         console.log(csvData);
         console.log(europe);
 
         //translate europe TopoJSON
         var europeCountries = topojson.feature(europe, europe.objects.EuropeCountries);
         var europe = topojson.feature(europe, europe.objects.EuropeCountries).features;
+        var franceRegions = topojson.feature(france, france.objects.FranceRegions).features;
 
         //examine the results
         //console.log(europeCountries);
 
-        //add Europe countries to map
+        // add Europe countries to map
+
         // var countries = map.append("path")
         //     .datum(europeCountries)
         //     .attr("class", "countries")
         //     .attr("d", path);
+
         var regions = map.selectAll(".regions")
             .data(europe)
             .enter()
             .append("path")
-            .attr("class", function(d){
+            .attr("class", function (d) {
                 return "regions " + d.properties.admin;
             })
             .attr("d", path);
-        
+
+        var franceRegions = map.selectAll(".regions")
+            .data(france)
+            .enter()
+            .append("path")
+            .attr("class", function (d) {
+                return "regions " + d.properties.admin;
+            })
+            .attr("d", path);
+
     }
-    
+
 }
