@@ -29,16 +29,29 @@ function setMap() {
             .attr("width", width)
             .attr("height", height);
 
+        // var projection = d3
+        //     .geoAlbers()
+        //     .center([0, 33.6])
+        //     .rotate([81, 0, 0])
+        //     .parallels([29.5, 45.5])
+        //     .scale(1000)
+        //     .translate([width / 2, height / 2]);
         var projection = d3
             .geoAlbers()
-            .center([0, 46.2])
-            .rotate([-2, 0, 0])
-            .parallels([43, 62])
-            .scale(2500)
+            .center([0.00, 29.96])
+
+            .rotate([99.18, -9.09, 0])
+
+            .parallels([30.86, 45.5])
+
+            .scale(755.56)
+
             .translate([width / 2, height / 2]);
+        var path = d3.geoPath()
+            .projection(projection);
 
         var naCountries = topojson.feature(na, na.objects.State_Boundaries),
-            usRegions = topojson.feature(us, us.objects.State_Boundaries);
+            usRegions = topojson.feature(us, us.objects.State_Boundaries).features;
 
 
         //translate na TopoJSON

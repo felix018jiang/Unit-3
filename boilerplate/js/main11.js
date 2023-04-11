@@ -73,6 +73,10 @@ function setMap() {
         //     .datum(europeCountries)
         //     .attr("class", "countries")
         //     .attr("d", path);
+        var countries = map.append("path")
+            .datum(europeCountries)
+            .attr("class", "countries")
+            .attr("d", path);
 
         var regions = map.selectAll(".regions")
             .data(europe)
@@ -83,14 +87,14 @@ function setMap() {
             })
             .attr("d", path);
 
-        var franceRegions = map.selectAll(".regions")
-            .data(france)
-            .enter()
-            .append("path")
-            .attr("class", function (d) {
-                return "regions " + d.properties.admin;
-            })
-            .attr("d", path);
+        // var franceRegions = map.selectAll(".regions")
+        //     .data(france)
+        //     .enter()
+        //     .append("path")
+        //     .attr("class", function (d) {
+        //         return "regions " + d.properties.admin;
+        //     })
+        //     .attr("d", path);
 
     }
 
