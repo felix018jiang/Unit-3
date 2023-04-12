@@ -18,8 +18,8 @@
 }
 
 .regions {
-    fill: #fcfafa;
-    stroke: #000000;
+    fill: #000000;
+    stroke: #ffffff;
     stroke-width: 1px;
 }
 
@@ -36,7 +36,7 @@
     border: medium solid #999;
 }
 .countries {
-    fill: #0f0e0e;
-    stroke: #fdfdfd;
+    fill: #ffffff;
+    stroke: #8e8e8e;
     stroke-width: 2px;
 }
