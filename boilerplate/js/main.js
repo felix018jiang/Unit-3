@@ -82,33 +82,33 @@ function setMap() {
         console.log(usRegions)
         //add enumeration units to the map
         setEnumerationUnits(usRegions, map, path, colorScale);
-        
-        function joinData(franceRegions,csvData){
+
+        function joinData(franceRegions, csvData) {
             //loop through csv to assign each set of csv attribute values to geojson region
-                for (var i=0; i<csvData.length; i++){
-                    var csvRegion = csvData[i]; //the current region
-                    var csvKey = csvRegion.State; //the CSV primary key
-    
-                    //loop through geojson regions to find correct region
-                    for (var a=0; a<franceRegions.length; a++){
-    
-                        var geojsonProps = franceRegions[a].properties; //the current region geojson properties
-                        var geojsonKey = geojsonProps.NAME; //the geojson primary key
-    
-                        //where primary keys match, transfer csv data to geojson properties object
-                        if (geojsonKey == csvKey){
-    
-                            //assign all attributes and values
-                            attrArray.forEach(function(attr){
-                                var val = parseFloat(csvRegion[attr]); //get csv attribute value
-                                geojsonProps[attr] = val; //assign attribute and value to geojson properties
-                            });
-                        };
+            for (var i = 0; i < csvData.length; i++) {
+                var csvRegion = csvData[i]; //the current region
+                var csvKey = csvRegion.State; //the CSV primary key
+
+                //loop through geojson regions to find correct region
+                for (var a = 0; a < franceRegions.length; a++) {
+
+                    var geojsonProps = franceRegions[a].properties; //the current region geojson properties
+                    var geojsonKey = geojsonProps.NAME; //the geojson primary key
+
+                    //where primary keys match, transfer csv data to geojson properties object
+                    if (geojsonKey == csvKey) {
+
+                        //assign all attributes and values
+                        attrArray.forEach(function (attr) {
+                            var val = parseFloat(csvRegion[attr]); //get csv attribute value
+                            geojsonProps[attr] = val; //assign attribute and value to geojson properties
+                        });
                     };
                 };
-                return franceRegions;
+            };
+            return franceRegions;
         }
-        function makeColorScale(data){
+        function makeColorScale(data) {
             var colorClasses = [
                 "#D4B9DA",
                 "#C994C7",
@@ -116,85 +116,149 @@ function setMap() {
                 "#DD1C77",
                 "#980043"
             ];
-    
+
             //create color scale generator
             var colorScale = d3.scaleQuantile()
                 .range(colorClasses);
-    
+
             //build array of all values of the expressed attribute
             var domainArray = [];
-            for (var i=0; i<data.length; i++){
+            for (var i = 0; i < data.length; i++) {
                 var val = parseFloat(data[i][expressed]);
                 domainArray.push(val);
             };
-    
+
             //assign array of expressed values as scale domain
             colorScale.domain(domainArray);
-    
+
             return colorScale;
         }
-    
-        function setEnumerationUnits(usRegions,map,path,colorScale){
-                //add France regions to map
-                var regions = map.selectAll(".regions")
-                    .data(usRegions)
-                    .enter()
-                    .append("path")
-                    .attr("class", function(d){
-                        //console.log(d)
-                        return "regions " + d.properties.State;
-                    })
-                    .attr("d", path)
-                    .style("fill", function(d){
-                        console.log(d.properties)
+
+        function setEnumerationUnits(usRegions, map, path, colorScale) {
+            //add France regions to map
+            var regions = map.selectAll(".regions")
+                .data(usRegions)
+                .enter()
+                .append("path")
+                .attr("class", function (d) {
+                    //console.log(d)
+                    return "regions " + d.properties.State;
+                })
+                .attr("d", path)
+                .style("fill", function (d) {
+                    var value = d.properties[expressed];
+                    if (value) {
                         return colorScale(d.properties[expressed]);
-                    });
+                    } else {
+                        return "#ccc";
+                    }
+                });
         }
+        setChart(csvData, colorScale);
     }
-    
+
 }
-function makeColorScale(data){
-    var colorClasses = [
-        "#D4B9DA",
-        "#C994C7",
-        "#DF65B0",
-        "#DD1C77",
-        "#980043"
-    ];
 
-    //create color scale generator
-    var colorScale = d3.scaleThreshold()
-        .range(colorClasses);
+//function to create coordinated bar chart
+function setChart(csvData, colorScale) {
+    //chart frame dimensions
+    var chartWidth = window.innerWidth * 0.425,
+        chartHeight = 460;
+        leftPadding = 25,
+        rightPadding = 2,
+        topBottomPadding = 5,
+        chartInnerWidth = chartWidth - leftPadding - rightPadding,
+        chartInnerHeight = chartHeight - topBottomPadding * 2,
+        translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
 
-    //build array of all values of the expressed attribute
-    var domainArray = [];
-    for (var i=0; i<data.length; i++){
-        var val = parseFloat(data[i][expressed]);
-        domainArray.push(val);
-    };
+    //create a second svg element to hold the bar chart
+    var chart = d3.select("body")
+        .append("svg")
+        .attr("width", chartWidth)
+        .attr("height", chartHeight)
+        .attr("class", "chart");
 
-    //cluster data using ckmeans clustering algorithm to create natural breaks
-    var clusters = ss.ckmeans(domainArray, 5);
-    //reset domain array to cluster minimums
-    domainArray = clusters.map(function(d){
-        return d3.min(d);
-    });
-    //remove first value from domain array to create class breakpoints
-    domainArray.shift();
-
-    //assign array of last 4 cluster minimums as domain
-    colorScale.domain(domainArray);
-
-    return colorScale;
+    //create a scale to size bars proportionally to frame
+    var yScale = d3.scaleLinear()
+        .range([0, chartHeight])
+        .domain([0, 105]);
     
+
+    //Example 2.4 line 8...set bars for each province
+    var bars = chart.selectAll(".bars")
+        .data(csvData)
+        .enter()
+        .append("rect")
+        .sort(function (a, b) {
+            return a[expressed] - b[expressed]
+        })
+        .attr("class", function (d) {
+            return "bars " + d.NAME;
+        })
+        .attr("width", chartWidth / csvData.length - 1)
+        .attr("x", function (d, i) {
+            return i * (chartWidth / csvData.length);
+        })
+        .attr("height", function (d) {
+            return yScale(parseFloat(d[expressed]));
+        })
+        .attr("y", function (d) {
+            return chartHeight - yScale(parseFloat(d[expressed]));
+        }).style("fill", function (d) {
+            return colorScale(d[expressed]);
+        });
+
+    //annotate bars with attribute value text
+    var numbers = chart.selectAll(".numbers")
+        .data(csvData)
+        .enter()
+        .append("text")
+        .sort(function (a, b) {
+            return a[expressed] - b[expressed]
+        })
+        .attr("class", function (d) {
+            return "numbers " + d.NAME;
+        })
+        .attr("text-anchor", "middle")
+        .attr("x", function (d, i) {
+            var fraction = chartWidth / csvData.length;
+            return i * fraction + (fraction - 1) / 2;
+        })
+        .attr("y", function (d) {
+            // console.log(chartHeight - yScale(parseFloat(d[expressed]))-15);
+            return chartHeight - yScale(parseFloat(d[expressed]) - 15);
+        })
+        .text(function (d) {
+            return d[expressed];
+        })
+
+
 };
-//Example 1.3 line 38
 
+//function to create a dropdown menu for attribute selection
+function createDropdown() {
+    //add select element
+    var dropdown = d3.select("body").append("select").attr("class", "dropdown");
 
-//translate europe and France TopoJSONs
-// var naCountries = topojson.feature(naCountries, naCountries.objects.naCountries).features,
-//     usRegions = topojson.feature(us, us.objects.FranceRegions).features;
+    //add initial option
+    var titleOption = dropdown
+        .append("option")
+        .attr("class", "titleOption")
+        .attr("disabled", "true")
+        .text("Select Attribute");
 
-//variables for data join
+    //add attribute name options
+    var attrOptions = dropdown
+        .selectAll("attrOptions")
+        .data(attrArray)
+        .enter()
+        .append("option")
+        .attr("value", function (d) {
+            return d;
+        })
+        .text(function (d) {
+            return d;
+        });
+};
+createDropdown();
 
-    //loop through csv to assign each set of csv attribute values to geojson region
