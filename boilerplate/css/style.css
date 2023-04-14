@@ -30,7 +30,7 @@
 }
 
 .gratBackground {
-    fill: #818da5;
+    fill: #5770a3;
 }
 .map {
     border: medium solid #999;
@@ -63,3 +63,9 @@
 option {
     font-weight: normal;
 }
+.numbers {
+    fill: white;
+    font-family: sans-serif;
+    writing-mode: vertical-rl; /* or vertical-lr */
+    transform: translateY(30px);
+  }

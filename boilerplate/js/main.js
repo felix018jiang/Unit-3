@@ -82,7 +82,7 @@ function setMap() {
         console.log(usRegions)
         //add enumeration units to the map
         setEnumerationUnits(usRegions, map, path, colorScale);
-
+        console.log("setEnumerationUnits")
         function joinData(franceRegions, csvData) {
             //loop through csv to assign each set of csv attribute values to geojson region
             for (var i = 0; i < csvData.length; i++) {
@@ -181,7 +181,7 @@ function setChart(csvData, colorScale) {
     //create a scale to size bars proportionally to frame
     var yScale = d3.scaleLinear()
         .range([0, chartHeight])
-        .domain([0, 105]);
+        .domain([0, 900000]);
     
 
     //Example 2.4 line 8...set bars for each province
