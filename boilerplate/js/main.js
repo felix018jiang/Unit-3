@@ -1,10 +1,20 @@
-//usregion
 //begin script when window loads
 window.onload = setMap();
 //pseudo-global variables
 var attrArray = ["MedianHomePrice", "MedianRentPrice", "HomeValue", "AverageHomeValue"]; //list of attributes
 var expressed = attrArray[0]; //initial attribute
+// var yScale = d3.scaleLinear().range([463, 0]).domain([0, 110]);
 //Example 1.3 line 4...set up choropleth map
+var yScale = d3.scaleLinear().range([463, 0]).domain([0, 843800]);
+var chartWidth = window.innerWidth * 0.425,
+    chartHeight = 473,
+    leftPadding = 25,
+    rightPadding = 2,
+    topBottomPadding = 5,
+    chartInnerWidth = chartWidth - leftPadding - rightPadding,
+    chartInnerHeight = chartHeight - topBottomPadding * 2,
+    translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
+
 function setMap() {
     //map frame dimensions
     var promises = [
@@ -152,17 +162,27 @@ function setMap() {
                     } else {
                         return "#ccc";
                     }
+                })
+                .on("mouseover", function(event, d){
+                    // highlight(d.properties);
                 });
         }
         setChart(csvData, colorScale);
     }
 
 }
+//function to highlight enumeration units and bars
+function highlight(props){
+    //change stroke
+    var selected = d3.selectAll("." + props.adm1_code)
+        .style("stroke", "blue")
+        .style("stroke-width", "2");
+};
 
 //function to create coordinated bar chart
 function setChart(csvData, colorScale) {
     //chart frame dimensions
-    var chartWidth = window.innerWidth * 0.425,
+    var chartWidth = window.innerWidth * 0.435,
         chartHeight = 460;
         leftPadding = 25,
         rightPadding = 2,
@@ -207,7 +227,7 @@ function setChart(csvData, colorScale) {
         }).style("fill", function (d) {
             return colorScale(d[expressed]);
         });
-
+        updateChart(bars, csvData.length, colorScale);
     //annotate bars with attribute value text
     var numbers = chart.selectAll(".numbers")
         .data(csvData)
@@ -238,7 +258,9 @@ function setChart(csvData, colorScale) {
 //function to create a dropdown menu for attribute selection
 function createDropdown() {
     //add select element
-    var dropdown = d3.select("body").append("select").attr("class", "dropdown");
+    var dropdown = d3.select("body")
+        .append("select")
+        .attr("class", "dropdown");
 
     //add initial option
     var titleOption = dropdown
@@ -262,3 +284,36 @@ function createDropdown() {
 };
 createDropdown();
 
+
+//Example 1.4 line 14...dropdown change event handler
+function changeAttribute(attribute, csvData){
+    //change the expressed attribute
+    expressed = attribute;
+
+    //recreate the color scale
+    var colorScale = makeColorScale(csvData);
+    
+};
+function updateChart(bars, n, colorScale){
+    
+    //position bars
+    bars.attr("x", function(d, i){
+            return i * (chartInnerWidth / n) + leftPadding;
+        })
+        //size/resize bars
+        .attr("height", function(d, i){
+            return 463 - yScale(parseFloat(d[expressed]));
+        })
+        .attr("y", function(d, i){
+            return yScale(parseFloat(d[expressed])) + topBottomPadding;
+        })
+        //color/recolor bars
+        .style("fill", function(d){            
+            var value = d[expressed];            
+            if(value) {                
+                return colorScale(value);            
+            } else {                
+                return "#ccc";            
+            }    
+    });
+};
