@@ -14,7 +14,31 @@ var chartWidth = window.innerWidth * 0.425,
     chartInnerWidth = chartWidth - leftPadding - rightPadding,
     chartInnerHeight = chartHeight - topBottomPadding * 2,
     translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
+function makeColorScale(data) {
+    var colorClasses = [
+        "#D4B9DA",
+        "#C994C7",
+        "#DF65B0",
+        "#DD1C77",
+        "#980043"
+    ];
 
+    //create color scale generator
+    var colorScale = d3.scaleQuantile()
+        .range(colorClasses);
+
+    //build array of all values of the expressed attribute
+    var domainArray = [];
+    for (var i = 0; i < data.length; i++) {
+        var val = parseFloat(data[i][expressed]);
+        domainArray.push(val);
+    };
+
+    //assign array of expressed values as scale domain
+    colorScale.domain(domainArray);
+
+    return colorScale;
+}
 function setMap() {
     //map frame dimensions
     var promises = [
@@ -92,7 +116,7 @@ function setMap() {
         console.log(usRegions)
         //add enumeration units to the map
         setEnumerationUnits(usRegions, map, path, colorScale);
-        console.log("setEnumerationUnits")
+
         function joinData(franceRegions, csvData) {
             //loop through csv to assign each set of csv attribute values to geojson region
             for (var i = 0; i < csvData.length; i++) {
@@ -118,31 +142,7 @@ function setMap() {
             };
             return franceRegions;
         }
-        function makeColorScale(data) {
-            var colorClasses = [
-                "#D4B9DA",
-                "#C994C7",
-                "#DF65B0",
-                "#DD1C77",
-                "#980043"
-            ];
 
-            //create color scale generator
-            var colorScale = d3.scaleQuantile()
-                .range(colorClasses);
-
-            //build array of all values of the expressed attribute
-            var domainArray = [];
-            for (var i = 0; i < data.length; i++) {
-                var val = parseFloat(data[i][expressed]);
-                domainArray.push(val);
-            };
-
-            //assign array of expressed values as scale domain
-            colorScale.domain(domainArray);
-
-            return colorScale;
-        }
 
         function setEnumerationUnits(usRegions, map, path, colorScale) {
             //add France regions to map
@@ -163,16 +163,17 @@ function setMap() {
                         return "#ccc";
                     }
                 })
-                .on("mouseover", function(event, d){
+                .on("mouseover", function (event, d) {
                     // highlight(d.properties);
                 });
         }
         setChart(csvData, colorScale);
+        createDropdown(csvData);
     }
 
 }
 //function to highlight enumeration units and bars
-function highlight(props){
+function highlight(props) {
     //change stroke
     var selected = d3.selectAll("." + props.adm1_code)
         .style("stroke", "blue")
@@ -184,7 +185,7 @@ function setChart(csvData, colorScale) {
     //chart frame dimensions
     var chartWidth = window.innerWidth * 0.435,
         chartHeight = 460;
-        leftPadding = 25,
+    leftPadding = 25,
         rightPadding = 2,
         topBottomPadding = 5,
         chartInnerWidth = chartWidth - leftPadding - rightPadding,
@@ -202,7 +203,7 @@ function setChart(csvData, colorScale) {
     var yScale = d3.scaleLinear()
         .range([0, chartHeight])
         .domain([0, 900000]);
-    
+
 
     //Example 2.4 line 8...set bars for each province
     var bars = chart.selectAll(".bars")
@@ -227,7 +228,7 @@ function setChart(csvData, colorScale) {
         }).style("fill", function (d) {
             return colorScale(d[expressed]);
         });
-        updateChart(bars, csvData.length, colorScale);
+
     //annotate bars with attribute value text
     var numbers = chart.selectAll(".numbers")
         .data(csvData)
@@ -252,15 +253,20 @@ function setChart(csvData, colorScale) {
             return d[expressed];
         })
 
-
+    updateChart(bars, csvData.length, colorScale);
 };
 
 //function to create a dropdown menu for attribute selection
-function createDropdown() {
+function createDropdown(csvData) {
     //add select element
     var dropdown = d3.select("body")
         .append("select")
-        .attr("class", "dropdown");
+        .attr("class", "dropdown")
+        .on("change", function () {
+            console.log(this.value)
+            changeAttribute(this.value, csvData)
+        });
+
 
     //add initial option
     var titleOption = dropdown
@@ -282,38 +288,53 @@ function createDropdown() {
             return d;
         });
 };
-createDropdown();
+
 
 
 //Example 1.4 line 14...dropdown change event handler
-function changeAttribute(attribute, csvData){
+function changeAttribute(attribute, csvData) {
     //change the expressed attribute
     expressed = attribute;
 
     //recreate the color scale
     var colorScale = makeColorScale(csvData);
-    
+    var bars = d3.selectAll(".bar")
+        //Sort bars
+        .sort(function (a, b) {
+            return b[expressed] - a[expressed];
+        });
+
+    updateChart(bars, csvData.length, colorScale);
 };
-function updateChart(bars, n, colorScale){
-    
+
+
+
+function updateChart(bars, n, colorScale) {
+
     //position bars
-    bars.attr("x", function(d, i){
-            return i * (chartInnerWidth / n) + leftPadding;
-        })
+    bars.attr("x", function (d, i) {
+        return i * (chartInnerWidth / n) + leftPadding;
+    })
         //size/resize bars
-        .attr("height", function(d, i){
+        .attr("height", function (d, i) {
             return 463 - yScale(parseFloat(d[expressed]));
         })
-        .attr("y", function(d, i){
+        .attr("y", function (d, i) {
             return yScale(parseFloat(d[expressed])) + topBottomPadding;
         })
         //color/recolor bars
-        .style("fill", function(d){            
-            var value = d[expressed];            
-            if(value) {                
-                return colorScale(value);            
-            } else {                
-                return "#ccc";            
-            }    
-    });
+        .style("fill", function (d) {
+            var value = d[expressed];
+            if (value) {
+                return colorScale(value);
+            } else {
+                return "#ccc";
+            }
+
+        });
+        //at the bottom of updateChart()...add text to chart title
+    var chartTitle = d3.select(".chartTitle")
+        .text("Number of Variable " + expressed[3] + " in each region");
+            //at the bottom of updateChart()...add text to chart title
+    
 };
