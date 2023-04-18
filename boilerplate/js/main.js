@@ -229,6 +229,14 @@ function setChart(csvData, colorScale) {
             return colorScale(d[expressed]);
         });
 
+
+    //create a text element for the chart title
+    var chartTitle = chart
+        .append("text")
+        .attr("x", 40)
+        .attr("y", 40)
+        .attr("class", "chartTitle");
+
     //annotate bars with attribute value text
     var numbers = chart.selectAll(".numbers")
         .data(csvData)
@@ -332,9 +340,9 @@ function updateChart(bars, n, colorScale) {
             }
 
         });
-        //at the bottom of updateChart()...add text to chart title
+    //at the bottom of updateChart()...add text to chart title
     var chartTitle = d3.select(".chartTitle")
         .text("Number of Variable " + expressed[3] + " in each region");
-            //at the bottom of updateChart()...add text to chart title
-    
+    //at the bottom of updateChart()...add text to chart title
+
 };
