@@ -191,7 +191,7 @@ function setChart(csvData, colorScale) {
     //chart frame dimensions
     var chartWidth = window.innerWidth * 0.435,
         chartHeight = 460;
-        leftPadding = 25,
+    leftPadding = 25,
         rightPadding = 2,
         topBottomPadding = 5,
         chartInnerWidth = chartWidth - leftPadding - rightPadding,
@@ -251,11 +251,18 @@ function setChart(csvData, colorScale) {
         .attr("class", "chartTitle");
 
     var desc = bars.append("desc").text('{"stroke": "none", "stroke-width": "0px"}');
-        
+
+    //create vertical axis generator
+    var yAxis = d3.axisLeft()
+        .scale(yScale);
+
+    //place axis
+    var axis = chart.append("g")
+        .attr("class", "axis")
+        .attr("transform", translate)
+        .call(yAxis);
 
     updateChart(bars, csvData.length, colorScale);
-
-    
 };
 
 //function to create a dropdown menu for attribute selection
@@ -436,22 +443,20 @@ function updateChart(bars, n, colorScale) {
 
 function setLabel(props) {
     //label content
-    var labelAttribute = "<h1>" + props[expressed] +
-        "</h1><b>" + expressed + "</b>";
-        "</h1><b>" + expressed + "</b>";
+    var labelAttribute = "<h1>" + props[expressed] + "</h1><b>" + expressed + "</b>";
 
     //create info label div
     var infolabel = d3.select("body")
         .append("div")
         .attr("class", "infolabel")
         .attr("id", props.adm1_code + "_label")
-        .html(labelAttribute);
-        
+        .html(labelAttribute)
+        .html(prop.State);
 
     var regionName = infolabel.append("div")
         .attr("class", "labelname")
         .html(props.name);
     var regionName = infolabel.append("div")
         .attr("class", "labelname")
-        .html(props.name);
+        .html(prop.name);
 };
