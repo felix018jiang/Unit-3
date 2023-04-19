@@ -251,7 +251,11 @@ function setChart(csvData, colorScale) {
         .attr("class", "chartTitle");
 
     var desc = bars.append("desc").text('{"stroke": "none", "stroke-width": "0px"}');
-        
+    
+    var axis = chart.append("g")
+        .attr("class", "axis")
+        .attr("transform", translate)
+        .call(yAxis);
 
     updateChart(bars, csvData.length, colorScale);
 
@@ -438,7 +442,6 @@ function setLabel(props) {
     //label content
     var labelAttribute = "<h1>" + props[expressed] +
         "</h1><b>" + expressed + "</b>";
-        "</h1><b>" + expressed + "</b>";
 
     //create info label div
     var infolabel = d3.select("body")
@@ -446,12 +449,9 @@ function setLabel(props) {
         .attr("class", "infolabel")
         .attr("id", props.adm1_code + "_label")
         .html(labelAttribute);
-        
 
     var regionName = infolabel.append("div")
         .attr("class", "labelname")
         .html(props.name);
-    var regionName = infolabel.append("div")
-        .attr("class", "labelname")
-        .html(props.name);
+    var regionName = infolabel.append("div").attr("class", "labelname").html(props.name);
 };

@@ -32,21 +32,25 @@
 .gratBackground {
     fill: #5770a3;
 }
+
 .map {
     border: medium solid #999;
     margin: 10px 0 0 20px;
 }
+
 .countries {
     fill: #ffffff;
     stroke: #8e8e8e;
     stroke-width: 2px;
 }
+
 .chart {
     background-color: rgba(100, 100, 100, 0.2);
     border: medium solid #999;
     float: right;
     margin: 10px 20px 0 0;
 }
+
 .dropdown {
     position: absolute;
     top: 30px;
@@ -63,14 +67,17 @@
 option {
     font-weight: normal;
 }
+
 .numbers {
     fill: white;
     font-family: sans-serif;
-    writing-mode: vertical-rl; /* or vertical-lr */
+    writing-mode: vertical-rl;
+    /* or vertical-lr */
     transform: translateY(30px);
     font-size: 9px;
-  }
-  .infolabel {    margin: 0 20px 0 0;    position: absolute;
+}
+
+.infolabel {    margin: 0 20px 0 0;    position: absolute;
     height: 50px;
     min-width: 100px;
     color: #fff;
