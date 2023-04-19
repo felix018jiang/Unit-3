@@ -78,7 +78,7 @@ option {
 }
 
 .infolabel {    margin: 0px 10px 0px 0px;    position: absolute;
-    height: 60px;
+    height: 200px;
     min-width: 100px;
     color: #fff;
     background-color: #000;

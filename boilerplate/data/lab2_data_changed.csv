@@ -1,4 +1,4 @@
-﻿#,State_Name,MedianHomePrice,MedianRentPrice,HomeValue,AverageHomeValue,State
+﻿#,StateName,MedianHomePrice,MedianRentPrice,HomeValue,AverageHomeValue,State
 1,California,843800,1586,411963,675063,CA
 2,Hawaii,715900,1651,417767,740097,HI
 3,Washington,668400,1337,347311,518215,WA

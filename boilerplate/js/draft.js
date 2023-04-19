@@ -8,7 +8,7 @@ var expressed = attrArray[0]; //initial attribute
 var yScale = d3.scaleLinear().range([463, 0]).domain([0, 843800]);
 var chartWidth = window.innerWidth * 0.425,
     chartHeight = 473,
-    leftPadding = 25,
+    leftPadding = 45,
     rightPadding = 2,
     topBottomPadding = 5,
     chartInnerWidth = chartWidth - leftPadding - rightPadding,
@@ -121,7 +121,7 @@ function setMap() {
             //loop through csv to assign each set of csv attribute values to geojson region
             for (var i = 0; i < csvData.length; i++) {
                 var csvRegion = csvData[i]; //the current region
-                var csvKey = csvRegion.State_Name; //the CSV primary key
+                var csvKey = csvRegion.StateName; //the CSV primary key
 
                 //loop through geojson regions to find correct region
                 for (var a = 0; a < franceRegions.length; a++) {
@@ -188,15 +188,6 @@ function highlight(props) {
 
 //function to create coordinated bar chart
 function setChart(csvData, colorScale) {
-    //chart frame dimensions
-    var chartWidth = window.innerWidth * 0.435,
-        chartHeight = 460;
-    leftPadding = 25,
-        rightPadding = 2,
-        topBottomPadding = 5,
-        chartInnerWidth = chartWidth - leftPadding - rightPadding,
-        chartInnerHeight = chartHeight - topBottomPadding * 2,
-        translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
 
     //create a second svg element to hold the bar chart
     var chart = d3.select("body")
@@ -204,12 +195,6 @@ function setChart(csvData, colorScale) {
         .attr("width", chartWidth)
         .attr("height", chartHeight)
         .attr("class", "chart");
-
-    //create a scale to size bars proportionally to frame
-    var yScale = d3.scaleLinear()
-        .range([0, chartHeight])
-        .domain([0, 900000]);
-
 
     //Example 2.4 line 8...set bars for each province
     var bars = chart.selectAll(".bars")
@@ -249,6 +234,17 @@ function setChart(csvData, colorScale) {
         .attr("x", 40)
         .attr("y", 40)
         .attr("class", "chartTitle");
+
+     //create vertical axis generator
+     var yAxis = d3.axisLeft()
+     .scale(yScale);
+
+ //place axis
+ var axis = chart.append("g")
+     .attr("class", "axis")
+     .attr("transform", translate)
+     .call(yAxis);
+
 
     var desc = bars.append("desc").text('{"stroke": "none", "stroke-width": "0px"}');
 
@@ -320,6 +316,9 @@ function moveLabel() {
 function changeAttribute(attribute, csvData) {
     //change the expressed attribute
     expressed = attribute;
+
+    var chartTitle = d3.select(".chartTitle")
+    .text(expressed + " in each state");
 
     //recreate the color scale
     var colorScale = makeColorScale(csvData);
@@ -427,10 +426,7 @@ function updateChart(bars, n, colorScale) {
             }
 
         });
-    //at the bottom of updateChart()...add text to chart title
-    var chartTitle = d3.select(".chartTitle")
-        .select(".chartTitle")
-        .text("Number of Variable " + expressed[3] + " in each region");
+
 
 };
 
@@ -448,9 +444,9 @@ function setLabel(props) {
 
     var regionName = infolabel.append("div")
         .attr("class", "labelname")
-        .html(props.name);
+        .html(props.StateName);
     var regionName = infolabel.append("div")
         .attr("class", "labelname")
-        //.html(prop.name);
+       // .html(prop.name);
 };
 

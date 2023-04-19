@@ -188,15 +188,7 @@ function highlight(props) {
 
 //function to create coordinated bar chart
 function setChart(csvData, colorScale) {
-    //chart frame dimensions
-    var chartWidth = window.innerWidth * 0.435,
-        chartHeight = 460;
-    leftPadding = 25,
-        rightPadding = 2,
-        topBottomPadding = 5,
-        chartInnerWidth = chartWidth - leftPadding - rightPadding,
-        chartInnerHeight = chartHeight - topBottomPadding * 2,
-        translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
+
 
     //create a second svg element to hold the bar chart
     var chart = d3.select("body")
@@ -248,10 +240,11 @@ function setChart(csvData, colorScale) {
         .append("text")
         .attr("x", 40)
         .attr("y", 40)
-        .attr("class", "chartTitle");
-
+        .attr("class", "chartTitle")
+        //.text("Number of Variable " + expressed[3] + " in each region");
+    console.log(chartTitle)
     var desc = bars.append("desc").text('{"stroke": "none", "stroke-width": "0px"}');
-
+        
     //create vertical axis generator
     var yAxis = d3.axisLeft()
         .scale(yScale);
@@ -262,6 +255,8 @@ function setChart(csvData, colorScale) {
         .attr("transform", translate)
         .call(yAxis);
 
+
+    console.log("testttt")
     updateChart(bars, csvData.length, colorScale);
 };
 
