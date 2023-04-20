@@ -77,8 +77,8 @@ option {
     font-size: 9px;
 }
 
-.infolabel {    margin: 0px 10px 0px 0px;    position: absolute;
-    height: 200px;
+.infolabel {    margin: 0px 0px 0px 0px;    position: absolute;
+    height: 130px;
     min-width: 100px;
     color: #fff;
     background-color: #000;
@@ -98,4 +98,11 @@ option {
     font-family: sans-serif;
     font-size: 0.8em;
     fill: #999;
+}
+
+.chartTitle {
+    font-family: sans-serif;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: right;
 }
