@@ -56,8 +56,9 @@ function setMap() {
 
         console.log(na)
         console.log(us)
-        var width = 960,
+        var width = window.innerWidth * 0.5,
             height = 460;
+
 
         var map = d3
             .select("body")
@@ -222,6 +223,9 @@ function setChart(csvData, colorScale) {
         })
         .attr("y", function (d) {
             return chartHeight - yScale(parseFloat(d[expressed]));
+        // .attr("axismax", function (d) {
+        //     return 
+        // })
         }).style("fill", function (d) {
             return colorScale(d[expressed]);
         })
@@ -236,21 +240,23 @@ function setChart(csvData, colorScale) {
         .attr("class", "chartTitle")
         .attr('text-anchor', 'right');
 
-     //create vertical axis generator
-     var yAxis = d3.axisLeft()
-     .scale(yScale);
+    //create vertical axis generator
+    var yAxis = d3.axisLeft()
+        .scale(yScale);
 
- //place axis
- var axis = chart.append("g")
-     .attr("class", "axis")
-     .attr("transform", translate)
-     .call(yAxis);
+    //place axis
+    var axis = chart.append("g")
+        .attr("class", "axis")
+        .attr("transform", translate)
+        .call(yAxis);
 
 
     var desc = bars.append("desc").text('{"stroke": "none", "stroke-width": "0px"}');
 
 
     updateChart(bars, csvData.length, colorScale);
+    console.log("test")
+    console.log(bars)
 
 
 };
@@ -319,8 +325,8 @@ function changeAttribute(attribute, csvData) {
     expressed = attribute;
 
     var chartTitle = d3.select(".chartTitle")
-    .text( expressed + " in each state ($)")
-    
+        .text(expressed + " in each state ($)")
+
 
     //recreate the color scale
     var colorScale = makeColorScale(csvData);
@@ -328,7 +334,7 @@ function changeAttribute(attribute, csvData) {
     //recolor enumeration units
     var regions = d3.selectAll(".regions")
         .transition()
-        .duration(1000)
+    barsaxis.duration(1000)
         .style("fill", function (d) {
             var value = d.properties[expressed];
             if (value) {
@@ -428,6 +434,8 @@ function updateChart(bars, n, colorScale) {
             }
 
         });
+    var yAxis = d3.axisLeft()
+        .scale(yScale);
 
 
 };
@@ -442,13 +450,13 @@ function setLabel(props) {
         .attr("class", "infolabel")
         .attr("id", props.adm1_code + "_label")
         .html(labelAttribute)
-        //.html(prop.State);
+    //.html(prop.State);
 
     var regionName = infolabel.append("div")
         .attr("class", "labelname")
         .html(props.StateName);
     var regionName = infolabel.append("div")
         .attr("class", "labelname")
-       // .html(prop.name);
+    // .html(prop.name);
 };
 
