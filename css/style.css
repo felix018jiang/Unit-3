@@ -53,7 +53,7 @@
 
 .dropdown {
     position: absolute;
-    top: 450px;
+    top: 30px;
     left: 40px;
     z-index: 10;
     font-family: sans-serif;
@@ -77,16 +77,14 @@ option {
     font-size: 9px;
 }
 
-.infolabel {    
-    margin: 0px;
-    position: absolute;
+.infolabel {    margin: 0px 0px 0px 0px;    position: absolute;
     height: 130px;
     min-width: 100px;
     color: #fff;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: #000;
     border: solid thin #fff;
-    padding: 10px;
-    top: -30px; 
+    padding: 10px 10px;
+    top: -75px;
 }
 .axis path,
 .axis line {
@@ -107,18 +105,4 @@ option {
     font-size: 1.5em;
     font-weight: bold;
     text-align: right;
-}
-#title{
-    width: auto;
-    padding: 5px;
-    height: 40px;
-    border-radius: 2%;
-    text-align: center;
-    background-color: #797fca;
-    color: #ffffff;
-    margin: 2 auto;
-    margin-bottom: 15px;
-    font-family: Arial, sans-serif;
-    font-size: 30px;
-    box-shadow: 3px 3px 3px rgb(231, 152, 96);
 }
